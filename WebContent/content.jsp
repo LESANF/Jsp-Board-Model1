@@ -1,7 +1,7 @@
 <%@page import="java.sql.*"%>
-<%@page import="javax.servlet.jsp.tagext.TryCatchFinally"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -23,34 +23,49 @@ th {
 <%
 	String idx = request.getParameter("idx");
 
-	try {
-		String driverName = "oracle.jdbc.driver.OracleDriver";
+try {
+	String driverName = "oracle.jdbc.driver.OracleDriver";
+	String url = "jdbc:oracle:thin:@localhost:1521:XE";
+	String ID = "BOARD";
+	String PS = "123";
 
-		String url = "jdbc:oracle:thin:@localhost:1521:XE";
+	Connection conn = null;
 
-		String ID = "BOARD";
+	Statement stmt = null;
 
-		String PS = "123";
+	ResultSet rs = null;
 
-		Connection conn = null;
+	Class.forName(driverName);
 
-		Statement stmt = null;
+	conn = DriverManager.getConnection(url, ID, PS);
 
-		ResultSet rs = null;
+	out.println("Oracle DB 연결 성공");
 
-		Class.forName(driverName);
+	stmt = conn.createStatement();
 
-		conn = DriverManager.getConnection(url, ID, PS);
+	String sql = "SELECT * FROM BOARD WHERE IDX=" + idx;
 
-		out.println("Oracle DB 연결 성공");
+	rs = stmt.executeQuery(sql);
 
-		stmt = conn.createStatement();
+	while (rs.next()) {
+		request.setAttribute("idx", rs.getString("idx"));
+		request.setAttribute("writer", rs.getString("writer"));
+		request.setAttribute("regdate", rs.getString("regdate"));
+		request.setAttribute("count", rs.getString("count"));
+		request.setAttribute("title", rs.getString("title"));
+		request.setAttribute("content", rs.getString("content"));
 
-		String sql = "SELECT * FROM BOARD WHERE IDX=" + idx;
+	}
+	rs.close();
+	stmt.close();
+	conn.close();
+} catch (Exception e) {
 
-		rs = stmt.executeQuery(sql);
+	out.println("Oracle Database Connection Something Problem. <hr>");
+	out.println(e.getMessage());
+	e.printStackTrace();
 
-		while (rs.next()) {
+}
 %>
 
 <body>
@@ -58,43 +73,29 @@ th {
 	<table>
 		<tr>
 			<th>글번호</th>
-			<td><%=rs.getString("idx")%></td>
+			<td>${idx}</td>
 			<th>작성자</th>
-			<td><%=rs.getString("writer")%></td>
+			<td>${writer}}</td>
 			<th>날짜</th>
-			<td><%=rs.getString("regdate")%></td>
+			<td>${reegdate }</td>
 			<th>조회수</th>
-			<td><%=rs.getString("count")%></td>
+			<td>${count}</td>
 		</tr>
 		<tr>
 			<th colspan="2">제목</th>
-			<td colspan="6"><%=rs.getString("title")%></td>
+			<td colspan="6">${title}</td>
 		</tr>
 		<tr height=100>
 			<th colspan="2">내용</th>
-			<td colspan="6"><%=rs.getString("content")%></td>
+			<td colspan="6">${content}</td>
 		</tr>
 
 
 
 	</table>
 	<a href="index.jsp">목록으로</a>
-	<a href="delete.jsp?idx=<%=rs.getString("idx")%>">삭제하기</a>
-	<%
-		}
-			rs.close();
-			stmt.close();
-			conn.close();
-		} catch (Exception e) {
+	<a href="delete.jsp?idx=${idx}">삭제하기</a>
 
-			out.println("Oracle Database Connection Something Problem. <hr>");
-
-			out.println(e.getMessage());
-
-			e.printStackTrace();
-
-		}
-	%>
 
 </body>
 </html>

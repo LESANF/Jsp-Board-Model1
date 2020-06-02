@@ -1,7 +1,10 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@page import="java.util.regex.Pattern"%>
-<%@page import="java.sql.*"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.regex.Pattern"%>
+<%@ page import="java.sql.*"%>
+<%@ page import="com.board.beans.Board"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 
 <!DOCTYPE unspecified PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
@@ -27,25 +30,46 @@ th {
 <%
 	try {
 
-		String driverName = "oracle.jdbc.driver.OracleDriver";
+	String driverName = "oracle.jdbc.driver.OracleDriver";
+	String url = "jdbc:oracle:thin:@localhost:1521:XE";
+	ResultSet rs = null;
+	Class.forName(driverName);
+	Connection con = DriverManager.getConnection(url, "BOARD", "123");
+	out.println("Oracle Database Connection Success.");
+	Statement stmt = con.createStatement();
+	String sql = "select * from board order by idx desc";
+	rs = stmt.executeQuery(sql);
 
-		String url = "jdbc:oracle:thin:@localhost:1521:XE";
+	ArrayList<Board> articleList = new ArrayList<Board>();
 
-		ResultSet rs = null;
+	while (rs.next()) {
+		Board article = new Board();
 
-		Class.forName(driverName);
+		article.setIdx(rs.getInt("idx"));
+		article.setTitle(rs.getString("title"));
+		article.setWriter(rs.getString("writer"));
+		article.setRegdate(rs.getString("regdate"));
+		article.setCount(rs.getInt("count"));
+		articleList.add(article); // 셋팅된 빈을 리스트에 추가합니다.
 
-		Connection con = DriverManager.getConnection(url, "BOARD",
-				"123");
+	}
 
-		out.println("Oracle Database Connection Success.");
+	request.setAttribute("articleList", articleList); // 셋팅된 리스트를 뷰에 포워드합니다.
 
-		Statement stmt = con.createStatement();
+	rs.close();
+	stmt.close();
+	con.close();
 
-		String sql = "select * from board order by idx desc";
+} catch (Exception e) {
 
-		rs = stmt.executeQuery(sql);
+	out.println("Oracle Database Connection Something Problem. <hr>");
+
+	out.println(e.getMessage());
+
+	e.printStackTrace();
+}
 %>
+
 <body>
 
 	<h1>게시글 리스트</h1>
@@ -58,41 +82,19 @@ th {
 			<th>조회수</th>
 		</tr>
 
-		<%
-			while (rs.next()) {
-
-					out.print("<tr>");
-
-					out.print("<td><a href='content.jsp?idx="
-							+ rs.getString("idx") + "'>" + rs.getString("idx")
-							+ "</a></td>");
-					out.print("<td>" + rs.getString("title") + "</td>");
-					out.print("<td>" + rs.getString("writer") + "</td>");
-					out.print("<td>" + rs.getString("regdate") + "</td>");
-					out.print("<td>" + rs.getString("count") + "</td>");
-
-					out.print("</tr>");
-
-				}
-		%>
+		<c:forEach items="${articleList}" var="article">
+			<tr>
+				<td>${article.idx}</td>
+				<td><a href='content.jsp?idx=${article.idx}'>${article.title}</a></td>
+				<td>${article.writer}</td>
+				<td>${article.regdate}</td>
+				<td>${article.count}</td>
+			</tr>
+		</c:forEach>
 
 	</table>
 
 	<a href="write.jsp">글쓰기</a>
-	<%
-		rs.close();
-			stmt.close();
-			con.close();
 
-		} catch (Exception e) {
-
-			out.println("Oracle Database Connection Something Problem. <hr>");
-
-			out.println(e.getMessage());
-
-			e.printStackTrace();
-
-		}
-	%>
 </body>
 </html>

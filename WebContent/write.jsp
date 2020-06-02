@@ -1,15 +1,15 @@
-<%@ page language="java" contentType="text/html; charset=EUC-KR"  pageEncoding="EUC-KR"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="UTF-8"%>
 
 
 <!DOCTYPE unspecified PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </head>
 
 <body>
 	<form action="insert.jsp" id="firstform" method="post" onsubmit="return formCheck();">
-		Á¦¸ñ : <input type="text" name="title"><br /> ÀÛ¼ºÀÚ : <input type="text" name="writer"><br /> ³¯Â¥ : <input type="text" name="regdate"><br /> ³»¿ë :
+		ì œëª© : <input type="text" name="title"><br /> ì‘ì„±ì : <input type="text" name="writer"><br /> ë‚ ì§œ : <input type="text" name="regdate"><br /> ë‚´ìš© :
 		<textarea rows="10" cols="20" name="content"></textarea>
 		<br /> <input type="submit">
 	</form>
@@ -25,33 +25,33 @@
 			var regdate = mainForm.regdate.value;
 
 			if (title == null || title == "") {
-				alert("Á¦¸ñÀ» ÀÔ·ÂÇÏ¼¼¿ä");
+				alert("ì œëª©ì„ ì…ë ¥í•˜ì„¸ìš”");
 				mainForm.title.focus();
 				return false;
 			}
 			if (writer == null || writer == "") {
-				alert("ÀÛ¼ºÀÚ¸¦ ÀÔ·ÂÇÏ¼¼¿ä");
+				alert("ì‘ì„±ìë¥¼ ì…ë ¥í•˜ì„¸ìš”");
 				mainForm.writer.focus();
 				return false;
 			} else if (writer.match(/^(\w+)@(\w+)[.](\w+)$/ig) == null) {
-				alert('ÀÌ¸ŞÀÏ Çü½ÄÀ¸·Î ÀÔ·ÂÇÏ¼¼¿ä');
+				alert('ì´ë©”ì¼ í˜•ì‹ìœ¼ë¡œ ì…ë ¥í•˜ì„¸ìš”');
 				mainForm.writer.focus();
 				return false;
 			}
 
 			if (regdate == null || regdate == "") {
-				alert("³¯Â¥¸¦ ÀÔ·ÂÇÏ¼¼¿ä");
+				alert("ë‚ ì§œë¥¼ ì…ë ¥í•˜ì„¸ìš”");
 				mainForm.regdate.focus();
 				return false;
 			} 
 		/* 	else if (regdate.match(/^\d\d\d\d\d\d+$/ig) == null) {
-				alert('¼ıÀÚ Çü½Ä(6ÀÚ¸®)À¸·Î ÀÔ·ÂÇÏ¼¼¿ä');
+				alert('ìˆ«ì í˜•ì‹(6ìë¦¬)ìœ¼ë¡œ ì…ë ¥í•˜ì„¸ìš”');
 				mainForm.regdate.focus();
 				return false;
 			} */
 			
 			if (content == null || content == "") {
-				alert("³»¿ëÀ» ÀÔ·ÂÇÏ¼¼¿ä");
+				alert("ë‚´ìš©ì„ ì…ë ¥í•˜ì„¸ìš”");
 				mainForm.content.focus();
 				return false;
 			}
@@ -61,7 +61,7 @@
 
 			 for (var i = 0; i < length; i++) {
 			 if (mainForm[i].value == null || mainForm[i].value == "") {
-			 alert(mainForm[i].name + "À»/¸¦ ÀÔ·ÂÇÏ¼¼¿ä");
+			 alert(mainForm[i].name + "ì„/ë¥¼ ì…ë ¥í•˜ì„¸ìš”");
 			 mainForm[i].focus();
 			 return false;
 			 }
